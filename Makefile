@@ -12,7 +12,7 @@ help:
 	@echo "  make install-precommit - install pre-commit hooks"
 
 test:
-	$(PYTHON) -m pytest -q
+	docker compose run --rm report sh -c "python -m pytest -q"
 
 run-report:
 	docker compose run --rm report
@@ -24,6 +24,5 @@ docker-run:
 	docker compose run --rm report
 
 install-precommit:
-	$(PIP) install pre-commit
-	pre-commit install
+	docker compose run --rm report sh -c "pip install pre-commit && pre-commit install --install-hooks"
 
