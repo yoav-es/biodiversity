@@ -15,7 +15,7 @@ test:
 	$(PYTHON) -m pytest -q
 
 run-report:
-	bash scripts/run_report.sh
+	docker compose run --rm report
 
 docker-build:
 	docker compose build
