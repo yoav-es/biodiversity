@@ -17,7 +17,7 @@ def test_observations_by_park() -> None:
     assert park_counts.loc[park_counts["park_name"] == "P1", "observations"].iloc[0] == 4
 
 
-def test_preprocess(tmp_path: Path = None) -> None:
+def test_preprocess(tmp_path: Path) -> None:
     # Synthetic small example
     species = pd.DataFrame({"scientific_name": ["s1", "s2"], "category": ["bird", "mammal"], "conservation_status": [None, "Unknown"]})
     observations = pd.DataFrame({"park_name": ["P1", "P1"], "scientific_name": ["s1", "s1"], "observations": [2, 3]})
