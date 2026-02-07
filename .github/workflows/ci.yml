@@ -27,6 +27,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Ensure ipykernel and register python3 kernel
+        run: |
+          pip install ipykernel
+          python -m ipykernel install --user --name python3 --display-name "python3"
+
       - name: Run tests
         run: python -m pytest -q
 
