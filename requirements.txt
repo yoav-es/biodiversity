@@ -4,6 +4,5 @@ seaborn>=0.12
 pytest>=7.0
 nbconvert>=6.5
 black>=23.9.1
-ruff>=0.18.0
-isort>=5.12.0
+
 
