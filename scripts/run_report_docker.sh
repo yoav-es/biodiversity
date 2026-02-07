@@ -14,6 +14,9 @@ docker compose build --no-cache
 
 echo "Running report (executes notebook inside container)..."
 docker compose run --rm report
-
 echo "Executed notebook saved to biodiversity-executed.ipynb"
+
+echo "Exporting executed notebook to HTML report (report.html)..."
+docker compose run --rm report sh -c "python -m nbconvert --to html biodiversity-executed.ipynb --output report.html"
+echo "Report written to report.html"
 
