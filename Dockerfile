@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
-
+# ensure a Jupyter kernel named `python3` is available for nbconvert execution
+RUN pip install --no-cache-dir ipykernel && python -m ipykernel install --sys-prefix --name python3 --display-name "python3"
 # copy project
 COPY . /app
 
