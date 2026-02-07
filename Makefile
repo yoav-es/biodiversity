@@ -23,6 +23,10 @@ docker-build:
 docker-run:
 	docker compose run --rm report
 
+report:
+	# Execute notebook and export HTML report entirely inside the container
+	docker compose run --rm report sh -c "python -m nbconvert --to notebook --execute biodiversity.ipynb --ExecutePreprocessor.timeout=600 --output biodiversity-executed.ipynb && python -m nbconvert --to html biodiversity-executed.ipynb --output report.html"
+
 install-precommit:
 	docker compose run --rm report sh -c "pip install pre-commit && pre-commit install --install-hooks"
 
