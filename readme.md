@@ -82,28 +82,31 @@ Project files
 - `.github/workflows/ci.yml` — CI pipeline
 - `Dockerfile`, `docker-compose.yml` — containerized report runner
 - `biodiversity-executed.ipynb` — last executed notebook (artifact)
-Makefile
+Scripts
 
-Makefile commands
+Two convenience scripts are provided to run the report from the project root (they call Docker Compose so no local Python installs are required):
 
-If you prefer simple commands, a Makefile is provided. From the project root:
+- Bash (Linux / macOS / WSL / Git Bash): `scripts/run_report_docker.sh`
+- PowerShell (Windows): `scripts/run_report_docker.ps1`
 
-- Run tests:
+Both scripts present a small interactive menu:
+
+1. Create HTML report — builds the image (no-cache), executes the notebook, and exports `report.html` (and `biodiversity-executed.ipynb`) into the project root.
+2. Open Jupyter Notebook — starts a containerized Jupyter server bound to localhost:8888.
+3. Exit
+
+Quick commands (no make)
+
+If you don't want to use the interactive scripts, use these Docker Compose one-liners:
+
+- Produce HTML report:
   ```sh
-  make test
+  docker compose run --rm report sh -c "python -m nbconvert --to notebook --execute biodiversity.ipynb --ExecutePreprocessor.timeout=600 --output biodiversity-executed.ipynb && python -m nbconvert --to html biodiversity-executed.ipynb --output report.html"
   ```
-- Execute the report locally (uses scripts/run_report.sh):
-- Execute the report (runs in Docker for OS-independence):
+
+- Start a Jupyter server via container:
   ```sh
-  make run-report
-  ```
-- Build the Docker image:
-  ```sh
-  make docker-build
-  ```
-- Run the report in Docker (writes executed notebook to project directory):
-  ```sh
-  make docker-run
+  docker compose run --service-ports --rm report sh -c "python -m notebook --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.password=''"
   ```
 
 CHANGELOG
