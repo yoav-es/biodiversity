@@ -28,6 +28,7 @@ cd biodiversity
 python -m venv .venv
 source .venv/bin/activate    # or .\\.venv\\Scripts\\Activate.ps1 on Windows PowerShell
 pip install -r requirements.txt
+pip install -e .              # optional: makes the biodiversity package importable everywhere
 ```
 
 3. Run tests
@@ -81,7 +82,9 @@ Project files
 - `requirements.txt` — runtime/dev dependencies
 - `.github/workflows/ci.yml` — CI pipeline
 - `Dockerfile`, `docker-compose.yml` — containerized report runner
-- `biodiversity-executed.ipynb` — last executed notebook (artifact)
+- `pyproject.toml` — project metadata and tool config (black, ruff, isort); supports `pip install -e .`
+- `CHANGELOG.md` — version history
+
 Scripts
 
 Two convenience scripts are provided to run the report from the project root (they call Docker Compose so no local Python installs are required):

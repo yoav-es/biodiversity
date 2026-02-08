@@ -5,8 +5,14 @@ __pycache__/
 # Jupyter checkpoints
 *.ipynb_checkpoints/
 
-# CSV files
+# CSV files (except project datasets)
 *.csv
+!observations.csv
+!species_info.csv
+
+# Generated report artifacts
+biodiversity-executed.ipynb
+report.html
 
 # Environment files
 .env

@@ -1,3 +1,11 @@
+[project]
+name = "biodiversity"
+version = "1.2.0"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+include = ["biodiversity*"]
+
 [tool.black]
 line-length = 88
 target-version = ['py311']
