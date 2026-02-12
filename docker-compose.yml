@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  report:
+    build: .
+    image: biodiversity-report:latest
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: ["bash", "-lc", "python -m nbconvert --to notebook --execute biodiversity.ipynb --output biodiversity-executed.ipynb --ExecutePreprocessor.timeout=600"]
+    tty: false
+

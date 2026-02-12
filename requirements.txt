@@ -1,0 +1,8 @@
+pandas>=1.5
+matplotlib>=3.5
+seaborn>=0.12
+pytest>=7.0
+nbconvert>=6.5
+black>=23.9.1
+
+
