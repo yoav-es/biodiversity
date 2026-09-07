@@ -1,4 +1,5 @@
 """Tests for data IO helpers."""
+
 from pathlib import Path
 
 import pandas as pd
@@ -24,4 +25,3 @@ def test_load_observations(tmp_path: Path) -> None:
     df = load_observations(p)
     assert isinstance(df, pd.DataFrame)
     assert df.loc[0, "observations"] == 3
-

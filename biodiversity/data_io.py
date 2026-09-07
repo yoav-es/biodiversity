@@ -1,4 +1,5 @@
 """Data loading utilities for the biodiversity project."""
+
 from pathlib import Path
 from typing import Any
 
@@ -24,4 +25,3 @@ def load_observations(path: Any) -> pd.DataFrame:
     p = Path(path)
     _ensure_file(p)
     return pd.read_csv(p)
-

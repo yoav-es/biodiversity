@@ -1,11 +1,12 @@
 """Visualization helpers for the biodiversity project."""
+
 from typing import Tuple
 
 import matplotlib.pyplot as plt
-from matplotlib.axes import Axes
-from matplotlib.figure import Figure
 import pandas as pd
 import seaborn as sns
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 
 
 def seaborn_barplot(
@@ -22,10 +23,18 @@ def seaborn_barplot(
     return fig, ax
 
 
-def plot_at_risk_summary(summary_df: pd.DataFrame, figsize: tuple = (8, 6)) -> Tuple[Figure, Axes]:
+def plot_at_risk_summary(
+    summary_df: pd.DataFrame, figsize: tuple = (8, 6)
+) -> Tuple[Figure, Axes]:
     """Plot at-risk species summary DataFrame (must contain 'conservation_status','count','pct')."""
     fig, ax = plt.subplots(figsize=figsize)
-    sns.barplot(data=summary_df, x="conservation_status", y="count", order=summary_df["conservation_status"], ax=ax)
+    sns.barplot(
+        data=summary_df,
+        x="conservation_status",
+        y="count",
+        order=summary_df["conservation_status"],
+        ax=ax,
+    )
     for bar, pct in zip(ax.containers[0], summary_df["pct"]):
         x = bar.get_x() + bar.get_width() / 2
         y = bar.get_height()
@@ -37,7 +46,9 @@ def plot_at_risk_summary(summary_df: pd.DataFrame, figsize: tuple = (8, 6)) -> T
     return fig, ax
 
 
-def plot_unknown_status_by_category(df: pd.DataFrame, figsize: tuple = (8, 6)) -> Tuple[Figure, Axes]:
+def plot_unknown_status_by_category(
+    df: pd.DataFrame, figsize: tuple = (8, 6)
+) -> Tuple[Figure, Axes]:
     """Plot species with Unknown status by category (expects columns: category, conservation_status, count)."""
     fig, ax = plt.subplots(figsize=figsize)
     sns.barplot(data=df, x="category", y="count", hue="conservation_status", ax=ax)
@@ -49,15 +60,21 @@ def plot_unknown_status_by_category(df: pd.DataFrame, figsize: tuple = (8, 6)) -
     return fig, ax
 
 
-
-def plot_stacked_bar_from_pivot(pivot_df: pd.DataFrame, palette: str = "Set2", figsize: tuple = (8, 5)):
+def plot_stacked_bar_from_pivot(
+    pivot_df: pd.DataFrame, palette: str = "Set2", figsize: tuple = (8, 5)
+):
     fig, ax = plt.subplots(figsize=figsize)
     # ensure Unknown is not shown in stacked charts (defensive in case pivot includes it)
     if "Unknown" in pivot_df.columns:
         plot_df = pivot_df.drop(columns=["Unknown"])
     else:
         plot_df = pivot_df
-    plot_df.plot(kind="bar", stacked=True, color=sns.color_palette(palette, n_colors=len(plot_df.columns)), ax=ax)
+    plot_df.plot(
+        kind="bar",
+        stacked=True,
+        color=sns.color_palette(palette, n_colors=len(plot_df.columns)),
+        ax=ax,
+    )
     ax.set_ylabel("Number of Species")
     ax.set_xlabel("Biological Category")
     ax.set_title("Conservation Status by Category (Sorted by Total)")
@@ -65,4 +82,3 @@ def plot_stacked_bar_from_pivot(pivot_df: pd.DataFrame, palette: str = "Set2", f
     sns.despine()
     plt.tight_layout()
     return fig, ax
-

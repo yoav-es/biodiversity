@@ -1,121 +1,146 @@
 # Biodiversity in U.S. National Parks
 
-This repository contains a reproducible analysis of species observations across U.S. National Parks. The primary artifact is a Jupyter notebook (analysis) and a small Python package (`biodiversity/`) that contains extracted helpers for data loading, cleaning, analysis and visualization.
+This repository contains a reproducible analysis of species observations across U.S. National Parks. The primary artifact is a Jupyter notebook and a supporting Python package (`biodiversity/`) containing extracted helper modules for data processing, analysis, and visualization.
 
-Quick highlights
-- Notebook: `biodiversity.ipynb` (analysis + narrative)
-- Package: `biodiversity/` (loaders, processing, analysis, viz)
-- Tests: pytest-based unit tests under `tests/`
-- CI: GitHub Actions workflow runs tests and executes the notebook
-- Docker: image + compose to run the report without local dependency setup
+## Quick Highlights
 
-Supported (recommended) environment
+- **Notebook**: `biodiversity.ipynb` - Primary interactive analysis and narrative report
+- **Package**: `biodiversity/` - Supporting modules for data loading, processing, analysis, and visualization
+- **Environment**: Python 3.11
+- **Execution**: Local CLI, Docker Compose, and interactive shell/PowerShell scripts
+
+## Overview
+
+This project provides an empirical analysis of species observations and conservation statuses across U.S. National Parks. It aims to identify trends in species endangerment, park biodiversity levels, and observation counts to inform conservation insights using Python and common data science libraries.
+
+## Features
+
+- Modular Python package (`biodiversity/`) with helpers for data I/O, processing, and visualization.
+- Automated report generation via `nbconvert` locally or in an isolated container.
+- Comprehensive test suite with `pytest`.
+- Pre-commit hooks for code formatting and linting (Black, Ruff, isort).
+- Automated CI pipeline via GitHub Actions.
+- Containerized Jupyter notebook server and report execution via Docker Compose.
+
+## Project Structure
+
+- `biodiversity.ipynb` — Primary analysis notebook (narrative + code)
+- `biodiversity/` — Python package with helper modules (`data_io`, `processing`, `analysis`, `viz`)
+- `tests/` — Unit and integration tests
+- `scripts/` — Helper scripts (`run_report_docker.sh`, `run_report_docker.ps1`)
+- `requirements.txt` / `pyproject.toml` — Runtime/dev dependencies and tool config
+- `.github/workflows/ci.yml` — GitHub Actions CI pipeline
+- `Dockerfile` / `docker-compose.yml` — Container setup files
+
+## Prerequisites & Environment
+
 - Python 3.11
-- See `requirements.txt` for pinned runtime/dev dependencies
+- Core dependencies:
+  - `pandas`
+  - `numpy`
+  - `matplotlib`
+  - `seaborn`
+  - `jupyter`
 
-Getting started (local)
+## Installation & Setup
 
-1. Clone the repository
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/username/biodiversity.git](https://github.com/username/biodiversity.git)
+   cd biodiversity
+   ```
 
-```sh
-git clone <repo-url>
-cd biodiversity
+2. Create a virtual environment and install dependencies:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate    # Windows PowerShell: .\.venv\Scripts\Activate.ps1
+   pip install -r requirements.txt
+   pip install -e .              # Optional: install biodiversity package in editable mode
+   ```
+
+## Development & Code Quality
+
+### Testing
+
+Run the test suite:
+
+```bash
+pytest -q
 ```
 
-2. Create a virtual environment and install dependencies
+### Pre-commit & Formatting
 
-```sh
-python -m venv .venv
-source .venv/bin/activate    # or .\\.venv\\Scripts\\Activate.ps1 on Windows PowerShell
-pip install -r requirements.txt
-pip install -e .              # optional: makes the biodiversity package importable everywhere
-```
+Install pre-commit hooks configured with Black, Ruff, and isort:
 
-3. Run tests
-
-```sh
-python -m pytest -q
-```
-
-4. Launch the notebook (optional)
-
-```sh
-jupyter notebook biodiversity.ipynb
-```
-
-Automated report generation (recommended)
-
-- To execute the notebook end-to-end and produce an executed notebook:
-  - Locally: `python -m nbconvert --to notebook --execute biodiversity.ipynb --output biodiversity-executed.ipynb`
-  - With Docker (recommended, isolated): see Docker section below
-
-Pre-commit and formatting
-
-We provide a `.pre-commit-config.yaml` with Black, Ruff and isort hooks. Install locally with:
-
-```sh
+```bash
 pip install pre-commit
 pre-commit install
 pre-commit run --all-files
 ```
 
-Continuous Integration
+## Execution & Report Generation
 
-- GitHub Actions workflow is configured at `.github/workflows/ci.yml`. It runs on pushes and PRs to `main`, `master` and `cursor-version`, installs requirements, runs the tests and executes the notebook.
+### Local Execution
 
-Docker (run the report without local installs)
+Generate the executed notebook and HTML report locally:
 
-- Build the image:
-  ```sh
-  docker compose build
-  ```
-- Run the report (the executed notebook will be produced in the project directory as `biodiversity-executed.ipynb`):
-  ```sh
-  docker compose run --rm report
-  ```
+```bash
+python -m nbconvert --to notebook --execute biodiversity.ipynb --output biodiversity-executed.ipynb
+python -m nbconvert --to html biodiversity-executed.ipynb --output report.html
+```
 
-Project files
+### Docker Execution (Isolated Environment)
 
-- `biodiversity.ipynb` — primary analysis notebook (narrative + code)
-- `biodiversity/` — Python package with helper modules (data_io, processing, analysis, viz)
-- `tests/` — unit tests
-- `requirements.txt` — runtime/dev dependencies
-- `.github/workflows/ci.yml` — CI pipeline
-- `Dockerfile`, `docker-compose.yml` — containerized report runner
-- `pyproject.toml` — project metadata and tool config (black, ruff, isort); supports `pip install -e .`
-- `CHANGELOG.md` — version history
+Build and run using Docker Compose:
 
-Scripts
+```bash
+docker compose build
+docker compose run --rm report
+```
 
-Two convenience scripts are provided to run the report from the project root (they call Docker Compose so no local Python installs are required):
+Or run via interactive helper scripts:
 
-- Bash (Linux / macOS / WSL / Git Bash): `scripts/run_report_docker.sh`
-- PowerShell (Windows): `scripts/run_report_docker.ps1`
+- **Linux / macOS / WSL**: `bash scripts/run_report_docker.sh`
+- **Windows**: `powershell -ExecutionPolicy Bypass -File scripts/run_report_docker.ps1`
 
-Both scripts present a small interactive menu:
+Outputs: `biodiversity-executed.ipynb`, `report.html`
 
-1. Create HTML report — builds the image (no-cache), executes the notebook, and exports `report.html` (and `biodiversity-executed.ipynb`) into the project root.
-2. Open Jupyter Notebook — starts a containerized Jupyter server bound to localhost:8888.
-3. Exit
+## Usage & Workflow
 
-Quick commands (no make)
+Launch the interactive Jupyter notebook environment:
 
-If you don't want to use the interactive scripts, use these Docker Compose one-liners:
+```bash
+jupyter notebook biodiversity.ipynb
+```
 
-- Produce HTML report:
-  ```sh
-  docker compose run --rm report sh -c "python -m nbconvert --to notebook --execute biodiversity.ipynb --ExecutePreprocessor.timeout=600 --output biodiversity-executed.ipynb && python -m nbconvert --to html biodiversity-executed.ipynb --output report.html"
-  ```
+Typical analytical workflow:
+1. **Data Review**: Load species and observation datasets to inspect schemas and missing values.
+2. **Data Cleaning & Formatting**: Standardize species categories, merge observation logs, and clean null records.
+3. **Exploratory Data Analysis (EDA)**: Evaluate species distributions and conservation status representations.
+4. **Analysis & Modeling**: Examine observation frequencies across parks and evaluate endangered species patterns.
+   - Which national parks have the highest species diversity and observation counts?
+   - How are species conservation statuses distributed across categories (e.g., mammals, birds, plants)?
+5. **Conclusions**: Synthesize findings regarding park biodiversity and document analytical limitations.
 
-- Start a Jupyter server via container:
-  ```sh
-  docker compose run --service-ports --rm report sh -c "python -m notebook --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.password=''"
-  ```
+## Continuous Integration
 
-CHANGELOG
+CI pipelines are managed via GitHub Actions (`.github/workflows/ci.yml`), which automatically runs tests, checks code style, and executes the report build on repository updates.
 
-- See `CHANGELOG.md` for the recent changes and version notes.
+## Data Source
 
-License
+This analysis utilizes the National Parks Biodiversity Data from the National Park Service.
 
-This project is available under the MIT License. See the `LICENSE` file.
+- **Dataset**: [Biodiversity in National Parks](https://www.kaggle.com/datasets/nationalparkservice/park-biodiversity)
+- **Required Files**:
+  - `species_info.csv`: Species taxonomy and conservation status (`category`, `scientific_name`, `common_names`, `conservation_status`).
+  - `observations.csv`: Species observation logs (`scientific_name`, `park_name`, `observations`).
+- **Location**: Download and place both CSV files into the `data/` directory.
+- **Repository Note**: Raw dataset files are ignored by git (`.gitignore`) and not committed to the repository to respect creator distribution rights.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and updates.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -1,4 +1,5 @@
 """Higher-level analysis utilities extracted from the notebook."""
+
 from typing import Dict, List, Tuple
 
 import pandas as pd
@@ -9,14 +10,23 @@ def observation_stats(observations: pd.DataFrame) -> Dict[str, int]:
     return {
         "total_observations": int(observations.shape[0]),
         "unique_species": int(observations["scientific_name"].nunique()),
-        "unique_parks": int(observations["park_name"].nunique()) if "park_name" in observations.columns else 0,
+        "unique_parks": (
+            int(observations["park_name"].nunique())
+            if "park_name" in observations.columns
+            else 0
+        ),
     }
 
 
 def top_species_by_observations(observations: pd.DataFrame, n: int = 1) -> pd.DataFrame:
     """Return the top-n species by total observations."""
-    if "scientific_name" not in observations.columns or "observations" not in observations.columns:
-        raise ValueError("observations must contain 'scientific_name' and 'observations'")
+    if (
+        "scientific_name" not in observations.columns
+        or "observations" not in observations.columns
+    ):
+        raise ValueError(
+            "observations must contain 'scientific_name' and 'observations'"
+        )
     counts = observations.groupby("scientific_name")["observations"].sum().reset_index()
     counts = counts.sort_values("observations", ascending=False).reset_index(drop=True)
     return counts.head(n)
@@ -28,7 +38,9 @@ def species_stats(species: pd.DataFrame) -> Dict[str, object]:
     if "category" in species.columns:
         res["num_categories"] = int(species["category"].nunique())
     if "conservation_status" in species.columns:
-        res["conservation_status_values"] = list(species["conservation_status"].dropna().unique())
+        res["conservation_status_values"] = list(
+            species["conservation_status"].dropna().unique()
+        )
     return res
 
 
@@ -39,10 +51,14 @@ def at_risk_species_df(species: pd.DataFrame) -> pd.DataFrame:
     return species[~species["conservation_status"].isin(["Unknown"])]
 
 
-def at_risk_observations(observations: pd.DataFrame, species: pd.DataFrame) -> pd.DataFrame:
+def at_risk_observations(
+    observations: pd.DataFrame, species: pd.DataFrame
+) -> pd.DataFrame:
     """Return observations rows for species that are at risk."""
     at_risk = at_risk_species_df(species)
-    return observations[observations["scientific_name"].isin(at_risk["scientific_name"])]
+    return observations[
+        observations["scientific_name"].isin(at_risk["scientific_name"])
+    ]
 
 
 def filter_bats(species: pd.DataFrame) -> pd.DataFrame:
@@ -71,15 +87,23 @@ def get_unknown_status_by_category(species: pd.DataFrame) -> pd.DataFrame:
     not_at_risk = species[species["conservation_status"].isin(["Unknown"])][
         ["scientific_name", "category", "conservation_status"]
     ]
-    return not_at_risk.groupby(["category", "conservation_status"]).size().reset_index(name="count")
+    return (
+        not_at_risk.groupby(["category", "conservation_status"])
+        .size()
+        .reset_index(name="count")
+    )
 
 
 def conservation_pivot_by_category(species: pd.DataFrame) -> pd.DataFrame:
     """Return a pivot table (category x conservation_status) of counts sorted by total descending."""
     df = species[["scientific_name", "category", "conservation_status"]].copy()
     df = df[~df["conservation_status"].isna()]
-    cat_status_counts = df.groupby(["category", "conservation_status"]).size().reset_index(name="count")
-    pivot_df = cat_status_counts.pivot(index="category", columns="conservation_status", values="count").fillna(0)
+    cat_status_counts = (
+        df.groupby(["category", "conservation_status"]).size().reset_index(name="count")
+    )
+    pivot_df = cat_status_counts.pivot(
+        index="category", columns="conservation_status", values="count"
+    ).fillna(0)
     # Exclude the 'Unknown' column from the pivot (we don't want Unknown shown in stacked charts)
     if "Unknown" in pivot_df.columns:
         pivot_df = pivot_df.drop(columns=["Unknown"])
@@ -95,4 +119,3 @@ def at_risk_by_park(observations: pd.DataFrame, species: pd.DataFrame) -> pd.Dat
         raise ValueError("observations must contain 'park_name' and 'observations'")
     res = aro.groupby("park_name")["observations"].sum().reset_index()
     return res.sort_values("observations", ascending=False).reset_index(drop=True)
-
